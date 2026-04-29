@@ -51,6 +51,41 @@ uv run scrapy crawl votaciones -a ids=347,891,2103
 uv run scrapy crawl senadores --logfile=logs/senadores.log
 ```
 
+### Validación offline y dataset local
+
+Los checks de mantenimiento no requieren red ni ejecutan spiders:
+
+```bash
+# Tests unitarios/offline
+uv run pytest
+
+# Si el entorno ya tiene dependencias resueltas y se quiere bloquear acceso a red de paquetes
+uv run --offline pytest
+
+# Validador read-only contra el snapshot local
+uv run python scripts/validate_dataset.py --db senado.db
+```
+
+El validador abre la base con SQLite URI `mode=ro`, por lo que no modifica `senado.db`. El argumento `--db` tiene prioridad sobre cualquier configuración de entorno.
+
+`SENADO_DB_PATH` permite apuntar el scraper, helpers de DB y validador a una base SQLite alternativa sin mover `senado.db`:
+
+```bash
+SENADO_DB_PATH=/ruta/a/otra/senado.db uv run python scripts/validate_dataset.py
+```
+
+Si no se pasa `--db` ni `SENADO_DB_PATH`, el proyecto usa `./senado.db` como ruta por defecto.
+
+### Contrato auditado del dataset
+
+El contrato actual del validador para el snapshot auditado espera, entre otros conteos, `737` IDs distintos de senadores presentes en `votos_nominales`. Esto convive con la historia previa del knowledge graph que registraba `728` senadores únicos; esa cifra histórica no debe borrarse ni reescribirse sin contexto, porque pertenece a una observación previa del proyecto. Para cierre/verificación del snapshot actual, prevalece el contrato documentado en `scripts/validate_dataset.py`.
+
+Warnings aceptados por el contrato actual:
+
+- **Perfiles faltantes**: algunos IDs presentes en votos no tienen fila en `senadores` porque el portal `/66/` solo expone perfiles vigentes.
+- **Votos o partidos vacíos**: existen valores vacíos heredados del dato fuente/snapshot y se reportan como advertencia, no como fallo.
+- **Votaciones sin votos**: ciertas votaciones existen en metadata pero no tienen votos nominales asociados; el validador las lista como advertencia aceptada.
+
 ## Hallazgos técnicos
 
 - El sitio carga votos nominales vía AJAX (`viewTableVot.php`), no en HTML estático

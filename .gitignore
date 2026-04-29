@@ -13,6 +13,8 @@ wheels/
 .ruff_cache/
 logs/
 *.db
+*.db-wal
+*.db-shm
 
 # OS
 .DS_Store

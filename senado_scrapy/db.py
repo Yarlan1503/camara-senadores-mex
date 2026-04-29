@@ -2,10 +2,12 @@
 
 from __future__ import annotations
 
+import os
 import sqlite3
 from pathlib import Path
 
-DB_PATH = Path(__file__).resolve().parent.parent / "senado.db"
+DEFAULT_DB_PATH = Path(__file__).resolve().parent.parent / "senado.db"
+DB_PATH = Path(os.environ.get("SENADO_DB_PATH", DEFAULT_DB_PATH))
 
 SCHEMA_SQL = """
 PRAGMA journal_mode=WAL;
@@ -47,9 +49,16 @@ CREATE INDEX IF NOT EXISTS idx_votos_senador_id ON votos_nominales(senador_id);
 """
 
 
+def resolve_db_path(db_path: Path | str | None = None) -> Path:
+    """Resolve DB path from explicit arg, SENADO_DB_PATH, or project default."""
+    if db_path is not None:
+        return Path(db_path)
+    return Path(os.environ.get("SENADO_DB_PATH", DB_PATH))
+
+
 def get_connection(db_path: Path | str | None = None) -> sqlite3.Connection:
     """Get a SQLite connection with proper configuration."""
-    path = Path(db_path) if db_path else DB_PATH
+    path = resolve_db_path(db_path)
     conn = sqlite3.connect(str(path))
     conn.execute("PRAGMA journal_mode=WAL")
     conn.execute("PRAGMA busy_timeout=5000")
