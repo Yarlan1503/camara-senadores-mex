@@ -12,6 +12,11 @@ Para cada votación se extrae:
 
 Fuente: `https://www.senado.gob.mx/66/votacion/{ID}`
 
+`votos_nominales` registra votos nominales de **senadores** (`Sen.`). No es
+un espejo del total bruto del AJAX oficial cuando ese fragmento mezcla filas de
+otros cargos (por ejemplo `Dip.`); en esos casos, que el conteo local sea menor
+al AJAX bruto no implica pérdida si coincide con el subconjunto `Sen.` auditado.
+
 ### Senadores
 
 Para cada senador (IDs extraídos de las votaciones):
@@ -78,7 +83,7 @@ Si no se pasa `--db` ni `SENADO_DB_PATH`, el proyecto usa `./senado.db` como rut
 
 ### Contrato auditado del dataset
 
-El contrato actual del validador para el snapshot auditado espera, entre otros conteos, `737` IDs distintos de senadores presentes en `votos_nominales`. Esto convive con la historia previa del knowledge graph que registraba `728` senadores únicos; esa cifra histórica no debe borrarse ni reescribirse sin contexto, porque pertenece a una observación previa del proyecto. Para cierre/verificación del snapshot actual, prevalece el contrato documentado en `scripts/validate_dataset.py`.
+El contrato actual del validador para el snapshot auditado espera, entre otros conteos, `454,094` filas en `votos_nominales` y `737` IDs distintos de senadores presentes en esa tabla. Ese total es el subconjunto nominal de senadores (`Sen.`), no el total bruto del AJAX oficial si incluye filas `Dip.`; los casos auditados 891, 3450 y 4890 siguen este criterio. Esto convive con la historia previa del knowledge graph que registraba `728` senadores únicos; esa cifra histórica no debe borrarse ni reescribirse sin contexto, porque pertenece a una observación previa del proyecto. Para cierre/verificación del snapshot actual, prevalece el contrato documentado en `scripts/validate_dataset.py`.
 
 Warnings aceptados por el contrato actual:
 

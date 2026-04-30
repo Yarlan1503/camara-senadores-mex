@@ -22,6 +22,10 @@ if str(PROJECT_ROOT) not in sys.path:
 from senado_scrapy.db import resolve_db_path  # noqa: E402
 
 
+# Dataset contract: votos_nominales counts nominal votes by senators (``Sen.``)
+# stored in the local snapshot. It is not expected to match the raw AJAX row
+# count when the official fragment also contains non-senator rows such as
+# ``Dip.``; audited mixed-row cases include vote IDs 891, 3450 and 4890.
 EXPECTED_COUNTS = {
     "votaciones": 4_993,
     "votos_nominales": 454_094,
@@ -296,6 +300,7 @@ def main(argv: list[str] | None = None) -> int:
 
     print(f"Validando dataset Senado: {db_path}")
     print("Conexión SQLite: READ-ONLY (URI mode=ro)")
+    print("Contrato votos_nominales: subconjunto nominal de senadores (Sen.), no AJAX bruto con filas Dip.")
 
     try:
         with open_readonly(db_path) as conn:
