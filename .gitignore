@@ -8,13 +8,39 @@ wheels/
 
 # Virtual environments
 .venv
+.venv/
+venv/
+env/
+ENV/
+.env
+.env.*
 
 # Scrapy / project
 .ruff_cache/
+.pytest_cache/
 logs/
+*.log
+cache/
+.cache/
+outputs/
+output/
+reports/
+reportes/
+exports/
+exportaciones/
+notebook_outputs/
+notebook-output/
+notebooks/.ipynb_checkpoints/
+.ipynb_checkpoints/
 *.db
+*.sqlite
+*.sqlite3
 *.db-wal
 *.db-shm
+*-wal
+*-shm
+*.wal
+*.shm
 
 # OS
 .DS_Store

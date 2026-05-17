@@ -1,5 +1,10 @@
 # Cámara de Senadores de México — Scraper
 
+> **Estado del repositorio**: antecedente legacy / snapshot de referencia. Este
+> proyecto se conserva para trazabilidad histórica y reproducibilidad del
+> scraper del Senado; **no es la base activa de desarrollo** del Observatorio
+> Congreso México.
+
 Spider Scrapy para extraer datos de votaciones nominales y perfiles de senadores del [portal del Senado de la República](https://www.senado.gob.mx/66/).
 
 ## Datos extraídos
